@@ -5,7 +5,7 @@ export default class ConsoleView {
         console.log("=== TRANSAÇÕES ===");
 
         transactions.forEach((t, index) => {
-            console.log((index + 1) + "-" + t.getdescription() + "| R$" + t.getValue());
+            console.log((index + 1) + " - " + t.getdescription() + " | R$" + t.getValue());
         });
     }
 
