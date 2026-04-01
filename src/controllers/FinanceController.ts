@@ -11,7 +11,7 @@ export default class FinanceController {
         this.view = view;
     }
 
-    public addIncome(description: string, value: number): void {
+    public getNewIncome(): Income {
         let income = new Income(description, value);
         this.transactions.push(income);
     }
@@ -20,14 +20,14 @@ export default class FinanceController {
         return this.transactions.reduce((total, t) => {return total + t.calculateImpact();}, 0);
     }
 
-    public addExpense(description: string, value: number): void {
+    public addExpense(description: string, value: number){
         let expense = new Expense(description, value);
 
         if(this.getBalance() >= value){
             this.transactions.push(expense);
         }
         else {
-            console.log("Saldo insuficiente!");
+            console.log("Saldo insuficiente para: " + description);
         }
     }
 
