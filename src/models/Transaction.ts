@@ -7,7 +7,6 @@ export default abstract class Transaction {
         this.value = value;
     }
 
-    //get e set transaction
     public getdescription(): string {
         return this.description;
     } 
@@ -16,7 +15,6 @@ export default abstract class Transaction {
         this.description = description;
     }
 
-    //get e set value 
     public getValue(): number {
         return this.value;
     }
