@@ -27,7 +27,7 @@ export default class FinanceController {
             this.transactions.push(expense);
         }
         else {
-            console.log("Salfo insuficiente!");
+            console.log("Saldo insuficiente!");
         }
     }
 
