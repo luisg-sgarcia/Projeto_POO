@@ -12,7 +12,7 @@ export default class FinanceController {
     }
 
     public addIncome(description: string, value: number): void {
-        const income = new Income(description, value);
+        let income = new Income(description, value);
         this.transactions.push(income);
     }
 
@@ -21,9 +21,8 @@ export default class FinanceController {
     }
 
     public addExpense(description: string, value: number): void {
-        const expense = new Expense(description, value);
+        let expense = new Expense(description, value);
 
-        //valida que há saldo
         if(this.getBalance() >= value){
             this.transactions.push(expense);
         }
@@ -36,6 +35,5 @@ export default class FinanceController {
         this.view.showTransactions(this.transactions);
         this.view.showBalance(this.getBalance());
     }
-
 
 }
