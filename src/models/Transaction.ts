@@ -7,11 +7,11 @@ export default abstract class Transaction {
         this.value = value;
     }
 
-    public getdescription(): string {
+    public getDescription(): string {
         return this.description;
     } 
 
-    public setdescription(description: string): void {
+    public setDescription(description: string): void {
         this.description = description;
     }
 

@@ -1,9 +1,16 @@
 import FinanceController from "../controllers/FinanceController";
-import Transaction from "../models/Transaction";
 import promptSync from 'prompt-sync';
+import IncomeRegister from "./IncomeRegister";
+import ExpenseRegister from "./ExpenseRegister";
 
 export default class ConsoleView {
     private prompt = promptSync();
+    private controller: FinanceController;
+
+    constructor(controller: FinanceController){
+        this.controller = controller;
+        this.mainMenu();
+    }
 
     public mainMenu(): void {
         let open: boolean = true;
@@ -13,6 +20,15 @@ export default class ConsoleView {
             let option = parseInt(this.prompt("1. Registrar entrada\n.2. Registrar despesa\n3. Sair"));
             switch (option) {
                 case 1:
+                    new IncomeRegister(this.controller);
+                    break;
+                case 2:
+                    new ExpenseRegister(this.controller);
+                    break;
+                case 3:
+                    console.log("escolheu sair");
+                    open = false;
+                    break;
             }
         }
     }

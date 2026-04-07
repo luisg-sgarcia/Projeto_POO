@@ -1,39 +1,42 @@
-import Transaction from "../models/Transaction";
+import Database from "../database";
 import Income from "../models/Income";
 import Expense from "../models/Expense";
 import ConsoleView from "../views/ConsoleView";
 
 export default class FinanceController {
-    private transactions: Transaction[] = [];
     private view: ConsoleView;
+    public database: Database = new Database();
 
-    constructor(view: ConsoleView){
-        this.view = view;
+    constructor(){
+        this.view = new ConsoleView(this);
     }
 
     public getNewIncome(): Income {
-        let income = new Income(description, value);
-        this.transactions.push(income);
-    }
+        return new Income();
+    }   
 
-    public getBalance(): number {
-        return this.transactions.reduce((total, t) => {return total + t.calculateImpact();}, 0);
-    }
+    public getNewExpense(): Expense {
+        return new Expense();
+    }   
 
-    public addExpense(description: string, value: number){
-        let expense = new Expense(description, value);
+    // public getBalance(): number {
+    //     return this.transactions.reduce((total, t) => {return total + t.calculateImpact();}, 0);
+    // }
 
-        if(this.getBalance() >= value){
-            this.transactions.push(expense);
-        }
-        else {
-            console.log("Saldo insuficiente para: " + description);
-        }
-    }
+    // public addExpense(description: string, value: number){
+    //     let expense = new Expense(description, value);
 
-    public showData(): void {
-        this.view.showTransactions(this.transactions);
-        this.view.showBalance(this.getBalance());
-    }
+    //     if(this.getBalance() >= value){
+    //         this.transactions.push(expense);
+    //     }
+    //     else {
+    //         console.log("Saldo insuficiente para: " + description);
+    //     }
+    // }
+
+    // public showData(): void {
+    //     this.view.showTransactions(this.transactions);
+    //     this.view.showBalance(this.getBalance());
+    // }
 
 }
