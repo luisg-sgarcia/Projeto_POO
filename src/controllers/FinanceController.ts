@@ -11,32 +11,29 @@ export default class FinanceController {
         this.view = new ConsoleView(this);
     }
 
-    public getNewIncome(): Income {
-        return new Income();
-    }   
+    public createIncome(description: string, value: number): Income {
+        return new Income(description, value);
+    } 
 
-    public getNewExpense(): Expense {
-        return new Expense();
-    }   
+    public createExpense(description: string, value: number): Expense {
+        return new Expense(description, value);
+    }
 
-    // public getBalance(): number {
-    //     return this.transactions.reduce((total, t) => {return total + t.calculateImpact();}, 0);
-    // }
+    public addIncome(income: Income): void {
+        this.database.income.push(income);
+    }
 
-    // public addExpense(description: string, value: number){
-    //     let expense = new Expense(description, value);
+    public addExpense(expense: Expense): void {
+        this.database.expense.push(expense);
+    }
 
-    //     if(this.getBalance() >= value){
-    //         this.transactions.push(expense);
-    //     }
-    //     else {
-    //         console.log("Saldo insuficiente para: " + description);
-    //     }
-    // }
+    public getBalance(): number {
+        let total = 0;
 
-    // public showData(): void {
-    //     this.view.showTransactions(this.transactions);
-    //     this.view.showBalance(this.getBalance());
-    // }
+        this.database.income.forEach(i => {total += i.calculateImpact();});
 
+        this.database.expense.forEach(e => {total += e.calculateImpact();});
+
+        return total;
+    }
 }
