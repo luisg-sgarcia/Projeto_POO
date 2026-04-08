@@ -17,7 +17,7 @@ export default class ConsoleView {
             console.clear();
 
             console.log("=================================");
-            console.log("      💰 SISTEMA FINANCEIRO      ");
+            console.log("       SISTEMA FINANCEIRO        ");
             console.log("=================================\n");
 
             console.log("1. Registrar entrada");
@@ -26,7 +26,7 @@ export default class ConsoleView {
             console.log("4. Ver transações");
             console.log("5. Sair\n");
 
-            const option = parseInt(this.prompt("👉 Escolha uma opção: "));
+            const option = parseInt(this.prompt("Escolha uma opção: "));
 
             switch (option) {
                 case 1:
@@ -46,7 +46,7 @@ export default class ConsoleView {
                     open = false;
                     break;
                 default:
-                    console.log("\n❌ Opção inválida!");
+                    console.log("\nOpção inválida!");
                     break;
             }
 
