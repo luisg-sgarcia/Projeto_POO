@@ -13,17 +13,21 @@ export default class ConsoleView {
     public mainMenu(): void {
         let open: boolean = true;
 
-        while(open){
-            console.log("Menu principal\n");
-            console.log(`
-                1. Registrar entrada
-                2. Registrar despesa
-                3. Ver saldo
-                4. Ver transações
-                5. Sair
-                `);
+        while (open) {
+            console.clear();
 
-            let option = parseInt(this.prompt("Escolha: "));
+            console.log("=================================");
+            console.log("      💰 SISTEMA FINANCEIRO      ");
+            console.log("=================================\n");
+
+            console.log("1. Registrar entrada");
+            console.log("2. Registrar despesa");
+            console.log("3. Ver saldo");
+            console.log("4. Ver transações");
+            console.log("5. Sair\n");
+
+            const option = parseInt(this.prompt("👉 Escolha uma opção: "));
+
             switch (option) {
                 case 1:
                     this.registerAIncome();
@@ -38,11 +42,16 @@ export default class ConsoleView {
                     this.showTransactions();
                     break;
                 case 5:
+                    console.log("\nSaindo do sistema...");
                     open = false;
                     break;
-                default: 
-                    console.log("Opção inválida!");
+                default:
+                    console.log("\n❌ Opção inválida!");
                     break;
+            }
+
+            if (open) {
+                this.prompt("\nPressione ENTER para continuar...");
             }
         }
     }
@@ -83,8 +92,13 @@ export default class ConsoleView {
 
         const expense = this.controller.createExpense(description, value);
 
-        this.controller.addExpense(expense);
-        console.log("Despesa registrada com sucesso!");    
+        const success = this.controller.addExpense(expense);
+
+        if (success) {
+            console.log("Despesa registrada com sucesso!");
+        } else {
+            console.log("Saldo insuficiente!");
+        }
     }
 
     public showBalance(): void {

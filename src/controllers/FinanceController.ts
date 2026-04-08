@@ -23,8 +23,15 @@ export default class FinanceController {
         this.database.income.push(income);
     }
 
-    public addExpense(expense: Expense): void {
-        this.database.expense.push(expense);
+    public addExpense(expense: Expense): boolean {
+        const currentBalance = this.getBalance();
+
+        if (currentBalance >= expense.getValue()) {
+            this.database.expense.push(expense);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public getBalance(): number {
