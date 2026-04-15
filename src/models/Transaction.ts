@@ -1,11 +1,12 @@
-export default abstract class Transaction {
-    private description: string;
-    private value: number;
+import TransactionType from "./TransactionType";
 
-    constructor(description: string, value: number) {
-        this.description = description;
-        this.value = value;
-    }
+export default class Transaction {
+    
+    constructor(
+        private description: string,
+        private value: number,
+        private type: TransactionType
+    ) {}
 
     public getDescription(): string {
         return this.description;
@@ -23,5 +24,16 @@ export default abstract class Transaction {
         this.value = value;
     }
 
-    public abstract calculateImpact(): number;
+    public getType(): TransactionType {
+        return this.type;
+    }
+
+    public calculateImpact(): number {
+        if (this.type == TransactionType.INCOME) {
+            return this.value;
+        }
+        else {
+            return -this.value;
+        }
+    }
 }

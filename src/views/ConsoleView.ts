@@ -1,39 +1,34 @@
 import FinanceController from "../controllers/FinanceController";
-import promptSync from 'prompt-sync';
+import TransactionType from "../models/TransactionType";
+import promptSync from "prompt-sync";
 
 export default class ConsoleView {
     private prompt = promptSync();
-    private controller: FinanceController;
 
-    constructor(controller: FinanceController){
-        this.controller = controller;
+    constructor(private controller: FinanceController) {
         this.mainMenu();
     }
 
     public mainMenu(): void {
-        let open: boolean = true;
+        let open = true;
 
         while (open) {
             console.clear();
-
-            console.log("=================================");
-            console.log("       SISTEMA FINANCEIRO        ");
-            console.log("=================================\n");
 
             console.log("1. Registrar entrada");
             console.log("2. Registrar despesa");
             console.log("3. Ver saldo");
             console.log("4. Ver transações");
-            console.log("5. Sair\n");
+            console.log("5. Sair");
 
-            const option = parseInt(this.prompt("Escolha uma opção: "));
+            const option = parseInt(this.prompt("Escolha: "));
 
             switch (option) {
                 case 1:
-                    this.registerAIncome();
+                    this.register(TransactionType.INCOME);
                     break;
                 case 2:
-                    this.registerAExpense();
+                    this.register(TransactionType.EXPENSE);
                     break;
                 case 3:
                     this.showBalance();
@@ -42,75 +37,57 @@ export default class ConsoleView {
                     this.showTransactions();
                     break;
                 case 5:
-                    console.log("\nSaindo do sistema...");
                     open = false;
                     break;
-                default:
-                    console.log("\nOpção inválida!");
-                    break;
             }
 
-            if (open) {
-                this.prompt("\nPressione ENTER para continuar...");
-            }
+            if (open) this.prompt("\nENTER...");
         }
     }
 
-    public registerAIncome(): void {
-        const description = this.prompt("Digite a descrição da entrada: ");
-        const value = parseFloat(this.prompt("Digite o valor da entrada: "));
+    private register(type: TransactionType): void {
+        const description = this.prompt("Descrição: ");
+
+        const input = this.prompt("Valor: ").replace(",", ".");
+        const value = parseFloat(input);
 
         if (isNaN(value)) {
             console.log("Valor inválido! Digite um número.");
             return;
         }
 
-        if (value <= 0) {
-            console.log("O valor deve ser maior que 0.");
-            return;
-        }
+        try {
+            const transaction = this.controller.createTransaction(
+                description,
+                value,
+                type
+            );
 
-        const income = this.controller.createIncome(description, value);
+            const success = this.controller.addTransaction(transaction);
 
-        this.controller.addIncome(income);    
-        console.log("Entrada registrada com sucesso!");
-    }
+            if (!success) {
+                console.log("Saldo insuficiente!");
+            } else {
+                console.log("Registrado com sucesso!");
+            }
 
-    public registerAExpense(): void {
-        const description = this.prompt("Digite a descrição da despesa: ");
-        const value = parseFloat(this.prompt("Digite o valor da despesa: "));
-
-        if (isNaN(value)) {
-            console.log("Valor inválido! Digite um número.");
-            return;
-        }
-
-        if (value <= 0) {
-            console.log("O valor deve ser maior que 0.");
-            return;
-        }
-
-        const expense = this.controller.createExpense(description, value);
-
-        const success = this.controller.addExpense(expense);
-
-        if (success) {
-            console.log("Despesa registrada com sucesso!");
-        } else {
-            console.log("Saldo insuficiente!");
+        } catch (error: any) {
+            console.log(error.message);
         }
     }
 
     public showBalance(): void {
         const balance = this.controller.getBalance();
-        console.log(`Saldo atual: R$ ${balance.toFixed(2)}`);    
+        console.log(`Saldo: R$ ${balance.toFixed(2)}`);
     }
 
     public showTransactions(): void {
-        console.log("\nEntradas:");
-        this.controller.database.income.forEach((i, index) => {console.log(`${index + 1} - ${i.getDescription()} | R$ ${i.getValue()}`);});
+        this.controller.getTransactions().forEach((t, index) => {
+            const sinal = t.getType() === TransactionType.EXPENSE ? "-" : "+";
 
-        console.log("\nDespesas:");
-        this.controller.database.expense.forEach((e, index) => {console.log(`${index + 1} - ${e.getDescription()} | R$ ${e.getValue()}`);});
+            console.log(
+                `${index + 1} - ${t.getDescription()} | ${sinal} R$ ${t.getValue()}`
+            );
+        });
     }
 }

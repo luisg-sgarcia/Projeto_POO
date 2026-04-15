@@ -1,46 +1,47 @@
 import Database from "../database";
-import Income from "../models/Income";
-import Expense from "../models/Expense";
-import ConsoleView from "../views/ConsoleView";
+import Transaction from "../models/Transaction";
+import TransactionType from "../models/TransactionType";
 
 export default class FinanceController {
-    private view: ConsoleView;
-    public database: Database = new Database();
 
-    constructor(){
-        this.view = new ConsoleView(this);
+    constructor(private database: Database) {}
+
+    public createTransaction(
+        description: string,
+        value: number,
+        type: TransactionType
+    ): Transaction {
+        if (value <= 0) {
+            throw new Error("Valor deve ser maior que zero");
+        }
+
+        return new Transaction(description, value, type);
     }
 
-    public createIncome(description: string, value: number): Income {
-        return new Income(description, value);
-    } 
+    public addTransaction(transaction: Transaction): boolean {
 
-    public createExpense(description: string, value: number): Expense {
-        return new Expense(description, value);
-    }
-
-    public addIncome(income: Income): void {
-        this.database.income.push(income);
-    }
-
-    public addExpense(expense: Expense): boolean {
-        const currentBalance = this.getBalance();
-
-        if (currentBalance >= expense.getValue()) {
-            this.database.expense.push(expense);
-            return true;
-        } else {
+        if (
+            transaction.getType() === TransactionType.EXPENSE &&
+            this.getBalance() < transaction.getValue()
+        ) {
             return false;
         }
+
+        this.database.transactions.push(transaction);
+        return true;
     }
 
     public getBalance(): number {
         let total = 0;
 
-        this.database.income.forEach(i => {total += i.calculateImpact();});
-
-        this.database.expense.forEach(e => {total += e.calculateImpact();});
+        this.database.transactions.forEach(t => {
+            total += t.calculateImpact();
+        });
 
         return total;
+    }
+
+    public getTransactions() {
+        return this.database.transactions;
     }
 }
